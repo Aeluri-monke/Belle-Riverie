@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BELLE RIVIÈRE — VHS</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Cinzel:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black:   #050405;
+  --deepred: #110202;
+  --red:     #8b0000;
+  --bloodred:#c0392b;
+  --neonred: #ff2222;
+  --cream:   #e8d9b8;
+  --bone:    #b8a882;
+  --scanline: rgba(0,0,0,0.18);
+  --vhs-white: #f0ede6;
+  --title:  'Cinzel', serif;
+  --body:   'EB Garamond', Georgia, serif;
+  --mono:   'VT323', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+/* Scanlines */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 9998; pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom, transparent 0px, transparent 2px,
+    var(--scanline) 2px, var(--scanline) 4px
+  );
+  animation: scanroll 10s linear infinite;
+}
+@keyframes scanroll {
+  from { background-position: 0 0; }
+  to   { background-position: 0 400px; }
+}
+/* Noise */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 9997; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  animation: staticflick 0.15s steps(1) infinite;
+}
+@keyframes staticflick {
+  0%,100% { opacity: 0.3; }
+  50%      { opacity: 0.18; }
+}
+.vignette {
+  position: fixed; inset: 0; z-index: 9996; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+}
+.crt-text {
+  text-shadow: -1px 0 1px rgba(255,0,50,0.3), 1px 0 1px rgba(0,200,255,0.3);
+}
+/* ── SCREENS ── */
+.screen { display: none; min-height: 100vh; position: relative; flex-direction: column; }
+.screen.active { display: flex; }
+/* ── TOP BAR ── */
+.top-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  background: rgba(5,4,5,0.95);
+  border-bottom: 1px solid rgba(139,0,0,0.7);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 24px;
+  font-family: var(--mono); font-size: 1.05rem; color: var(--bone);
+  letter-spacing: 0.08em;
+}
+.top-bar .tb-brand { color: var(--neonred); letter-spacing: 0.15em; }
+.top-bar .tb-nav { display: flex; gap: 20px; }
+.top-bar .tb-nav a {
+  color: var(--bone); text-decoration: none; letter-spacing: 0.1em;
+  transition: color 0.15s; font-size: 0.95rem;
+}
+.top-bar .tb-nav a:hover, .top-bar .tb-nav a.active { color: var(--neonred); }
+/* ── SCREEN 1 MAIN ── */
+#screen-main { background: var(--black); align-items: center; justify-content: center; overflow: hidden; }
+.faction-slideshow { position: absolute; inset: 0; z-index: 0; }
+.faction-slide {
+  position: absolute; inset: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+.faction-slide.visible { opacity: 1; }
+.slide-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(to right, rgba(5,4,5,0.94) 35%, rgba(5,4,5,0.25) 65%, rgba(5,4,5,0.7) 100%),
+    linear-gradient(to top, rgba(5,4,5,0.98) 0%, transparent 35%);
+}
+.main-menu-content {
+  position: relative; z-index: 10;
+  display: flex; flex-direction: column; align-items: flex-start;
+  padding: 0 8vw; max-width: 680px;
+}
+.vhs-label {
+  font-family: var(--mono); font-size: 0.9rem; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--neonred); margin-bottom: 18px;
+  animation: blink-slow 3s steps(1) infinite;
+}
+@keyframes blink-slow {
+  0%,80%,100% { opacity: 1; } 85%,95% { opacity: 0; }
+}
+.main-title {
+  font-family: var(--title); font-size: clamp(3.5rem, 9vw, 6.5rem);
+  font-weight: 700; line-height: 0.9; color: var(--vhs-white);
+  text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px;
+}
+.main-subtitle {
+  font-family: var(--mono); font-size: 1.1rem; letter-spacing: 0.2em;
+  color: rgba(139,0,0,0.9); margin-bottom: 40px; text-transform: uppercase;
+}
+.dvd-menu { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.dvd-menu li a {
+  font-family: var(--mono); font-size: 1.5rem; letter-spacing: 0.12em;
+  color: var(--bone); text-decoration: none; display: flex;
+  align-items: center; gap: 12px; padding: 6px 0;
+  transition: color 0.15s, letter-spacing 0.2s;
+  text-transform: uppercase;
+}
+.dvd-menu li a::before {
+  content: '▶'; color: var(--red); font-size: 0.75rem; opacity: 0;
+  transition: opacity 0.15s;
+}
+.dvd-menu li a:hover { color: var(--vhs-white); letter-spacing: 0.18em; }
+.dvd-menu li a:hover::before { opacity: 1; }
+.timecode {
+  position: absolute; bottom: 20px; left: 20px;
+  font-family: var(--mono); font-size: 1.1rem;
+  color: rgba(232,217,184,0.3); letter-spacing: 0.1em; z-index: 10;
+}
+.race-label {
+  position: absolute; bottom: 20px; right: 24px;
+  font-family: var(--mono); font-size: 1.15rem; letter-spacing: 0.18em;
+  color: var(--neonred); z-index: 10; text-align: right;
+  transition: opacity 0.5s;
+}
+/* ── INNER SCREENS ── */
+.inner-screen {
+  padding-top: 50px;
+  min-height: 100vh;
+  background: var(--deepred);
+  background-image:
+    linear-gradient(180deg, rgba(139,0,0,0.1) 0%, transparent 25%),
+    repeating-linear-gradient(90deg, transparent 0, transparent 119px, rgba(139,0,0,0.04) 120px);
+}
+.screen-wrap {
+  position: relative; z-index: 1;
+  max-width: 920px; margin: 0 auto; padding: 52px 24px 90px;
+}
+.screen-eyebrow {
+  font-family: var(--mono); font-size: 1rem; letter-spacing: 0.25em;
+  color: rgba(139,0,0,0.8); text-transform: uppercase; margin-bottom: 8px;
+}
+.screen-title {
+  font-family: var(--title); font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700; color: var(--vhs-white); text-transform: uppercase;
+  letter-spacing: 0.07em; margin-bottom: 32px;
+  border-bottom: 1px solid rgba(139,0,0,0.5); padding-bottom: 14px; line-height: 1.1;
+}
+.rule {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, var(--red) 0%, transparent 100%);
+  margin: 38px 0; opacity: 0.4;
+}
+/* ── FACTIONS ── */
+.faction-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px; margin-top: 8px;
+}
+.faction-card {
+  background: rgba(8,0,0,0.75); border: 1px solid rgba(139,0,0,0.25);
+  padding: 20px; transition: border-color 0.2s, background 0.2s;
+  overflow: hidden;
+}
+.faction-card:hover { border-color: var(--red); background: rgba(20,2,2,0.9); }
+.faction-card-img {
+  width: 75px; height: 95px; object-fit: cover; object-position: top center;
+  float: right; margin: 0 0 8px 12px;
+  opacity: 0.65; filter: saturate(0.5) contrast(1.1);
+  border: 1px solid rgba(139,0,0,0.35);
+}
+.faction-card-name {
+  font-family: var(--title); font-size: 1rem; color: var(--neonred);
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
+}
+.faction-card-text {
+  font-family: var(--body); font-size: 0.93rem; line-height: 1.72;
+  color: var(--bone); clear: both;
+}
+.faction-card-text strong { color: var(--cream); }
+.threat {
+  display: block; font-family: var(--mono); font-size: 0.82rem;
+  letter-spacing: 0.08em; color: rgba(139,0,0,0.7); margin-top: 12px;
+}
+/* ── CHARACTERS ── */
+.char-entry {
+  display: grid; grid-template-columns: 150px 1fr;
+  gap: 28px; margin-bottom: 52px; align-items: start;
+}
+.char-entry:last-child { margin-bottom: 0; }
+.char-portrait { width: 150px; flex-shrink: 0; border: 1px solid rgba(139,0,0,0.45); position: relative; overflow: hidden; }
+.char-portrait img { width: 100%; display: block; filter: saturate(0.7) contrast(1.05); }
+.char-portrait::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 55%, rgba(5,4,5,0.85) 100%);
+}
+.char-slot-label {
+  position: absolute; bottom: 6px; left: 0; right: 0; text-align: center;
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;
+  color: var(--neonred); z-index: 2; text-transform: uppercase;
+}
+.char-name {
+  font-family: var(--title); font-size: 1.55rem; font-weight: 700;
+  color: var(--vhs-white); letter-spacing: 0.05em; text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.char-tags {
+  font-family: var(--mono); font-size: 0.88rem; letter-spacing: 0.12em;
+  color: rgba(139,0,0,0.9); text-transform: uppercase; margin-bottom: 16px;
+}
+.char-desc { font-size: 1rem; line-height: 1.8; color: var(--bone); }
+.char-desc + .char-desc { margin-top: 12px; }
+.char-desc strong { color: var(--cream); }
+.chars-placeholder {
+  font-family: var(--mono); font-size: 0.95rem; letter-spacing: 0.1em;
+  color: rgba(184,168,130,0.35); border: 1px dashed rgba(139,0,0,0.25);
+  padding: 24px; text-align: center; text-transform: uppercase; margin-top: 24px;
+}
+/* ── LORE ── */
+.lore-toc { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 36px; }
+.lore-toc-btn {
+  font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--bone); background: transparent;
+  border: 1px solid rgba(139,0,0,0.35); padding: 5px 13px;
+  cursor: pointer; transition: all 0.15s;
+}
+.lore-toc-btn:hover, .lore-toc-btn.active {
+  background: var(--red); border-color: var(--red); color: #050405;
+}
+.lore-entry { display: none; }
+.lore-entry.active { display: block; }
+.lore-entry-title {
+  font-family: var(--title); font-size: 1.55rem; color: var(--neonred);
+  letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 22px;
+}
+.lore-body { font-size: 1.02rem; line-height: 1.85; color: var(--bone); max-width: 700px; }
+.lore-body p { margin-bottom: 16px; }
+.lore-body p:last-child { margin-bottom: 0; }
+.lore-body strong { color: var(--cream); }
+.lore-body em { font-style: italic; }
+.lore-circles { border-left: 2px solid var(--red); padding-left: 18px; margin: 18px 0; display: flex; flex-direction: column; gap: 14px; }
+.circle-name { font-family: var(--mono); font-size: 0.88rem; letter-spacing: 0.12em; color: var(--neonred); text-transform: uppercase; margin-bottom: 4px; }
+.circle-desc { font-size: 0.95rem; line-height: 1.65; color: var(--bone); }
+.court-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+.court-card-l { border: 1px solid rgba(139,0,0,0.35); padding: 16px; background: rgba(0,0,0,0.4); }
+.court-card-l-name { font-family: var(--mono); font-size: 0.88rem; letter-spacing: 0.12em; color: var(--neonred); text-transform: uppercase; margin-bottom: 8px; }
+.court-card-l-text { font-size: 0.9rem; line-height: 1.65; color: var(--bone); }
+/* ── AUTHORS NOTE ── */
+.authors-paper {
+  background: rgba(8,0,0,0.65); border: 1px solid rgba(139,0,0,0.22);
+  padding: 40px 44px; max-width: 680px;
+}
+.authors-byline {
+  font-family: var(--mono); font-size: 0.85rem; letter-spacing: 0.2em;
+  color: rgba(139,0,0,0.8); text-transform: uppercase; margin-bottom: 24px;
+}
+.authors-text {
+  font-family: var(--body); font-style: italic; font-size: 1.1rem;
+  line-height: 2; color: var(--bone);
+}
+.authors-sig {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.15em;
+  color: rgba(184,168,130,0.35); text-transform: uppercase;
+  margin-top: 28px; text-align: right;
+}
+/* Blood drip rule */
+.blood-line {
+  width: 100%; height: 3px; background: var(--red);
+  position: relative; margin: 40px 0; opacity: 0.55;
+}
+.blood-line::after {
+  content: ''; position: absolute; top: 3px; left: 8%;
+  width: 2px; height: 20px;
+  background: linear-gradient(to bottom, var(--red), transparent);
+  box-shadow: 60px 0 0 var(--red), 145px 0 0 var(--red), 270px 0 0 var(--red),
+              410px 0 0 var(--red), 560px 0 0 var(--red);
+}
+/* Responsive */
+@media (max-width: 640px) {
+  .main-title { font-size: 3rem; }
+  .dvd-menu li a { font-size: 1.25rem; }
+  .char-entry { grid-template-columns: 1fr; }
+  .char-portrait { width: 100%; max-width: 200px; }
+  .court-cards { grid-template-columns: 1fr; }
+  .top-bar .tb-nav { gap: 10px; }
+  .top-bar .tb-nav a { font-size: 0.8rem; }
+  .authors-paper { padding: 24px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after { animation: none; }
+  .faction-slide { transition: opacity 0.1s; }
+}
+</style>
+</head>
+<body>
+
+<div class="vignette"></div>
+
+<!-- TOP BAR -->
+<div class="top-bar" id="top-bar" style="display:none;">
+  <span class="tb-brand crt-text">BELLE RIVIÈRE</span>
+  <nav class="tb-nav">
+    <a href="#" onclick="goTo('main');return false;">▶ MENU</a>
+    <a href="#" onclick="goTo('factions');return false;" id="nav-factions">FACTIONS</a>
+    <a href="#" onclick="goTo('characters');return false;" id="nav-characters">CHARACTERS</a>
+    <a href="#" onclick="goTo('lore');return false;" id="nav-lore">LORE</a>
+    <a href="#" onclick="goTo('authors');return false;" id="nav-authors">AUTHOR'S NOTE</a>
+  </nav>
+</div>
+
+<!-- ═══ SCREEN 1 — MAIN MENU ═══ -->
+<div class="screen active" id="screen-main">
+  <div class="faction-slideshow" id="slideshow">
+    <div class="faction-slide visible" style="background-image:url('br_assets/witch.png')"></div>
+    <div class="faction-slide" style="background-image:url('br_assets/vampire.png')"></div>
+    <div class="faction-slide" style="background-image:url('br_assets/werewolf.png')"></div>
+    <div class="faction-slide" style="background-image:url('br_assets/ghoul.png')"></div>
+    <div class="faction-slide" style="background-image:url('br_assets/lake.png')"></div>
+    <div class="faction-slide" style="background-image:url('br_assets/human.png')"></div>
+  </div>
+  <div class="slide-overlay"></div>
+  <div class="main-menu-content">
+    <p class="vhs-label crt-text">▶▶ REC &nbsp;·&nbsp; BELLE RIVIÈRE, LOUISIANA 1980s</p>
+    <h1 class="main-title crt-text">Belle<br>Rivière</h1>
+    <p class="main-subtitle">A Town With Too Many Secrets</p>
+    <ul class="dvd-menu">
+      <li><a href="#" onclick="goTo('factions');return false;">Factions</a></li>
+      <li><a href="#" onclick="goTo('characters');return false;">Characters</a></li>
+      <li><a href="#" onclick="goTo('lore');return false;">Lore Archive</a></li>
+      <li><a href="#" onclick="goTo('authors');return false;">Author's Note</a></li>
+    </ul>
+  </div>
+  <div class="timecode" id="timecode">00:00:00:00</div>
+  <div class="race-label crt-text" id="race-label">WITCH</div>
+</div>
+
+<!-- ═══ SCREEN 2 — FACTIONS ═══ -->
+<div class="screen inner-screen" id="screen-factions">
+  <div class="screen-wrap">
+    <p class="screen-eyebrow">BELLE RIVIÈRE // INHABITANTS</p>
+    <h2 class="screen-title crt-text">Factions</h2>
+    <div class="faction-grid">
+      <div class="faction-card">
+        <img src="br_assets/vampire.png" class="faction-card-img" alt=""/>
+        <p class="faction-card-name">Vampires</p>
+        <p class="faction-card-text">Ancient. Court-based. Obsessed with bloodline and political theater. Sustain on blood, weakened by sunlight. Abilities scale with age. <strong>Two courts remain: Velvet and Cypress.</strong> Both dangerous. They just show it differently.</p>
+        <span class="threat">THREAT LEVEL ██████████</span>
+      </div>
+      <div class="faction-card">
+        <img src="br_assets/werewolf.png" class="faction-card-img" alt=""/>
+        <p class="faction-card-name">Werewolves</p>
+        <p class="faction-card-text">Run in packs. Territorial, community-focused, deeply uninterested in vampire succession debates. Two forms: humanoid with visible animal traits, and full animal triggered by will or the <strong>full moon</strong>. Consent matters here.</p>
+        <span class="threat">THREAT LEVEL ████████░░</span>
+      </div>
+      <div class="faction-card">
+        <img src="br_assets/witch.png" class="faction-card-img" alt=""/>
+        <p class="faction-card-name">Witches</p>
+        <p class="faction-card-text">Not vampires. Do not belong to vampire courts. Four active circles: <strong>Moonwater</strong> (swamp seers), <strong>Moss</strong> (bayou rootwork), <strong>Hearth</strong> (family tradition), <strong>Candle</strong> (parlors tourists think are harmless).</p>
+        <span class="threat">THREAT LEVEL ███████░░░</span>
+      </div>
+      <div class="faction-card">
+        <img src="br_assets/ghoul.png" class="faction-card-img" alt=""/>
+        <p class="faction-card-name">Ghouls</p>
+        <p class="faction-card-text">Scavengers. Survivors. Most likely to look at a centuries-long vampire crisis and say <em>"and?"</em> No courts. No packs. Just networks. Sustain on the dead. Their public institution: <strong>the library</strong>. They see everything.</p>
+        <span class="threat">THREAT LEVEL █████░░░░░</span>
+      </div>
+      <div class="faction-card">
+        <img src="br_assets/lake.png" class="faction-card-img" alt=""/>
+        <p class="faction-card-name">The Lake</p>
+        <p class="faction-card-text">There is something in the lake. Everyone knows. Nobody says it out loud. Ancient — older than everything. No jurisdiction applies. <strong>Don't go near the water after dark.</strong> The legends are not exaggerated.</p>
+        <span class="threat">THREAT LEVEL ██████████ ??</span>
+      </div>
+      <div class="faction-card">
+        <img src="br_assets/human.png" class="faction-card-img" alt=""/>
+        <p class="faction-card-name">Humans &amp; Others</p>
+        <p class="faction-card-text">Broadly aware something is wrong. Handle this by not thinking about it. And then there are <strong>cannibals</strong> — technically human, the most unsettling thing in the ecosystem. No courts, no packs. Just rumors and a loose network. Even monsters find them difficult to categorize.</p>
+        <span class="threat">THREAT LEVEL ████░░░░░░ / ???</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 3 — CHARACTERS ═══ -->
+<div class="screen inner-screen" id="screen-characters">
+  <div class="screen-wrap">
+    <p class="screen-eyebrow">BELLE RIVIÈRE // PERSONS OF INTEREST</p>
+    <h2 class="screen-title crt-text">Characters</h2>
+
+    <!-- Lurielle -->
+    <div class="char-entry">
+      <div class="char-portrait">
+        <img src="br_assets/vampire.png" alt="Lurielle Vale"/>
+        <span class="char-slot-label">VELVET COURT</span>
+      </div>
+      <div>
+        <p class="char-name crt-text">Lurielle Vale</p>
+        <p class="char-tags">Vampire &nbsp;·&nbsp; Velvet Court &nbsp;·&nbsp; Elder Twin</p>
+        <p class="char-desc">Elder twin by minutes — a fact the courts have never let either sibling forget. Heir of the Velvet Court. Terrifyingly competent, politically gifted, emotionally armored in every direction. She is not insane. She is the kind of person everyone wonders about. <strong>Huge difference.</strong></p>
+        <p class="char-desc">As a child she was close with her brother. Then the courts started noticing things. People smiled at Lior. People obeyed Lurielle. She noticed. She adapted. The Court called it excellence. Lior called it something else. She has not seen him in over a century. She receives news about him, reads it, folds the paper, says <em>"that idiot"</em> in a tone that contains several other things, and goes back to work.</p>
+        <p class="char-desc"><strong>Appearance:</strong> Tall, deep dark brown skin, long dark hair that falls straight and severe, pale silver-grey eyes with a stillness that unsettles people. Sharp silhouettes, shoulder pads she treats as armor. A signet ring three hundred years old.</p>
+      </div>
+    </div>
+
+    <div class="blood-line"></div>
+
+    <!-- Lior -->
+    <div class="char-entry">
+      <div class="char-portrait">
+        <img src="br_assets/vampire.png" alt="Lior Vale" style="filter:saturate(0.35) hue-rotate(160deg) contrast(1.1);"/>
+        <span class="char-slot-label">CYPRESS COURT</span>
+      </div>
+      <div>
+        <p class="char-name crt-text">Lior Vale</p>
+        <p class="char-tags">Vampire &nbsp;·&nbsp; Cypress Court &nbsp;·&nbsp; Younger Twin</p>
+        <p class="char-desc">Raised by a rival court. Heir of the Cypress Court. Charismatic, observant, politically capable — he just applies those skills to things the Velvet Court considers a waste of time, like being liked by people.</p>
+        <p class="char-desc">He remembers the sister he grew up with, not the terrifying future ruler she became. He performs the rivalry when required. He sends insults via intermediary that he knows she'll find funny. He has heard she folds the newspaper before anyone can see her reaction.</p>
+        <p class="char-desc"><strong>Appearance:</strong> Tall, dark brown skin, long locs often tucked under a headscarf, pale silver-grey eyes — the one feature neither court could divide. Easy smile. The kind of face that makes people assume he is less dangerous than he is. Mesh shirts, silver chains, a cross necklace worn with full awareness this is ridiculous.</p>
+      </div>
+    </div>
+
+    <div class="blood-line"></div>
+
+    <!-- Librarian -->
+    <div class="char-entry">
+      <div class="char-portrait">
+        <img src="br_assets/ghoul.png" alt="The Librarian"/>
+        <span class="char-slot-label">THE LIBRARY</span>
+      </div>
+      <div>
+        <p class="char-name crt-text">The Librarian</p>
+        <p class="char-tags">Ghoul &nbsp;·&nbsp; Archivist &nbsp;·&nbsp; Belle Rivière Public Library</p>
+        <p class="char-desc">No name anyone uses to her face. Long sleeves, high collars, hair across her face. She moves quietly. She is aware of everything in the library at all times. She looks up infrequently — never in a way that suggests she missed anything while looking down.</p>
+        <p class="char-desc">She has files on everyone. Court genealogies, territorial histories, personal dirt going back centuries. If anything happens to her, the documentation has already made arrangements to surface in the appropriate places. <strong>Everyone in the supernatural community knows this.</strong> It is the main reason she is still alive.</p>
+      </div>
+    </div>
+
+    <div class="blood-line"></div>
+
+    <!-- Benny Walker -->
+    <div class="char-entry">
+      <div class="char-portrait">
+        <img src="br_assets/human.png" alt="Benjamin Walker"/>
+        <span class="char-slot-label">THE UNDERGROUND</span>
+      </div>
+      <div>
+        <p class="char-name crt-text">Benjamin Walker</p>
+        <p class="char-tags">Human &nbsp;·&nbsp; Cannibal &nbsp;·&nbsp; Walker Butcher Shop</p>
+        <p class="char-desc">To the public, Benny is a handsome, polite, sweet-faced young butcher known for his warm smile and dependable service. Families shop there. Elderly locals trust him. People wave at him on the street. He looks like the safest man in town. <strong>That is exactly why he matters.</strong></p>
+        <p class="char-desc">The Walker butcher shop has existed as a quiet point of contact in the cannibal underground for decades — passed down from his grandfather, who framed the whole arrangement as ugly family responsibility. One more strange private thing Belle Rivière demanded from people who survived there. Benny was already involved in the rhythm of the shop before he fully understood what the special customers were asking for.</p>
+        <p class="char-desc">He is not the leader of the cannibal underground. There is no leader. He is simply <em>useful enough that people know his name.</em> Some trust him. Some think he is too soft. Some know better than to mistake softness for harmlessness.</p>
+        <p class="char-desc">His grandfather rested a hand on his shoulder after his first taste and told him he had done well. <strong>That approval ruined him more than he admits.</strong></p>
+      </div>
+    </div>
+
+    <div class="blood-line"></div>
+    <div class="chars-placeholder">// MORE CHARACTERS ADDED AS BOTS ARE MADE //</div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 4 — LORE ═══ -->
+<div class="screen inner-screen" id="screen-lore">
+  <div class="screen-wrap">
+    <p class="screen-eyebrow">BELLE RIVIÈRE // CLASSIFIED FILES</p>
+    <h2 class="screen-title crt-text">Lore Archive</h2>
+    <div class="lore-toc">
+      <button class="lore-toc-btn active" onclick="showLore(this,'world')">The Town</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'territory')">Territory</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'vampires')">Vampires</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'witches')">Witches</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'wolves')">Werewolves</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'ghouls')">Ghouls</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'lake')">The Lake</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'cannibals')">Cannibals</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'underground')">The Underground</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'etiquette')">Codes &amp; Etiquette</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'families')">Cannibal Families</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'economy')">Economy</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'eighties')">1980s</button>
+      <button class="lore-toc-btn" onclick="showLore(this,'twins')">The Vale Twins</button>
+    </div>
+
+    <div class="lore-entry active" id="lore-world">
+      <h3 class="lore-entry-title">Belle Rivière, Louisiana</h3>
+      <div class="lore-body">
+        <p>The setting is <strong>Belle Rivière, Louisiana in the 1980s</strong>. A modern gothic hybrid where humans, vampires, werewolves, ghouls, witches, cannibals, and lake monsters coexist — though "coexist" is a generous word for it.</p>
+        <p>The town is draped in Spanish moss, thick summer heat, neon bleeding over wet streets, and the particular kind of silence that comes from a population that has collectively agreed not to ask too many questions. Each faction occupies its own corner and operates on a strict, unspoken rule: <strong>stay in your lane.</strong></p>
+        <p>Humans live here too. Some have always suspected the truth. Nobody would believe them. The ones who have actually seen something tend to stop talking fairly quickly — whether by instinct, or by a soft, subconscious nudge from a vampire passing nearby.</p>
+        <p><em>Belle Rivière is not safe. It is, however, very pretty.</em></p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-territory">
+      <h3 class="lore-entry-title">Territorial Rules</h3>
+      <div class="lore-body">
+        <p>Belle Rivière operates on a jigsaw puzzle of strictly enforced territorial boundaries. Each faction claims its slice and does not venture into another's without reason.</p>
+        <p><strong>Vampire courts</strong> occupy the grand plantation estates and old manors on the outskirts, connected by ornate underground tunnels. <strong>Werewolf packs</strong> have their own tunnels — utilitarian, dug into the land like they intend to stay forever. The ghouls find both tunnel systems baffling.</p>
+        <p><strong>Witches</strong> don't hold territory like vampires or werewolves. Their power scatters through circles, guilds, family homes, candle shops, back rooms, swamp clearings, and favors owed. Influence is not ownership.</p>
+        <p>The human parts of town are a loose neutral buffer. <strong>Monsters don't fight in front of humans.</strong> Less a law than an agreement forged out of mutual self-interest — police attention is inconvenient for everyone. A proper neutral zone does not yet exist. <em>That is a 2000s problem.</em></p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-vampires">
+      <h3 class="lore-entry-title">Vampires &amp; The Courts</h3>
+      <div class="lore-body">
+        <p>Vampires sustain on blood, are weakened by direct sunlight, and have abilities that scale with age and rank. Elder vampires can shift into bats, command enhanced strength, and have a passive presence humans find difficult to consciously register as threatening. Younger vampires pass as ordinary people in daylight.</p>
+        <p>Vampires are born or turned. Turning requires consent and court approval — a rule older vampires find deeply irritating and quietly ignore.</p>
+        <p>Two major courts remain in Belle Rivière:</p>
+        <div class="court-cards">
+          <div class="court-card-l">
+            <p class="court-card-l-name">The Velvet Court</p>
+            <p class="court-card-l-text">Lurielle Vale's court. Old money, older blood. Political manipulation as high art. Appearances are everything. Cruelty, when elegant, is praised. When someone says "the Court" without clarifying, they usually mean Velvet.</p>
+          </div>
+          <div class="court-card-l">
+            <p class="court-card-l-name">The Cypress Court</p>
+            <p class="court-card-l-text">Lior Vale's court. Less obsessed with succession theater. More community-focused, more practical. Handles diplomacy with werewolves, witches, ghouls, and inconvenient humans. Still vampires. Still dangerous.</p>
+          </div>
+        </div>
+        <p>Belle Rivière used to have more vampire factions. Most were absorbed, ruined, married off, or bought out. The vampires still act like this was strategy and not centuries of rich people making everything complicated.</p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-witches">
+      <h3 class="lore-entry-title">Witch Circles</h3>
+      <div class="lore-body">
+        <p>Witches in Belle Rivière are separate from vampires. They do not belong to vampire courts, do not answer to court law, and deeply resent being treated like accessories to someone else's aristocratic nonsense.</p>
+        <p>They organize through circles, covens, guilds, family lines, shops, and private traditions. Witch politics are less formal than vampire politics but not less dangerous — a smile over tea can still be a threat if the right charm is cooling in the saucer.</p>
+        <div class="lore-circles">
+          <div><p class="circle-name">The Moonwater Circle</p><p class="circle-desc">The oldest and strangest. Swamp-adjacent seers, curse-workers, omen readers, ritual specialists. They know things. They rarely share. When they say <em>the river said no</em>, most sensible people stop arguing.</p></div>
+          <div><p class="circle-name">The Moss Circle</p><p class="circle-desc">Closest to the land. Bayou magic, rootwork, protection, rot, growth, weather, and the old swamp paths.</p></div>
+          <div><p class="circle-name">The Hearth Circle</p><p class="circle-desc">Hidden in family tradition. Church-adjacent superstition, kitchens, quilts, baby charms, front-porch warnings.</p></div>
+          <div><p class="circle-name">The Candle Circle</p><p class="circle-desc">Parlors, tarot readings, fake psychics, real psychics, and neon-lit little businesses tourists mistake for harmless entertainment.</p></div>
+        </div>
+        <p>Vampires hire them. Werewolves distrust them. Ghouls exchange records with them. The lake ignores them unless it decides not to.</p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-wolves">
+      <h3 class="lore-entry-title">Werewolves</h3>
+      <div class="lore-body">
+        <p>Werewolves run in packs. Territorial, community-focused, and deeply suspicious of the vampire courts and their endless political theater. More like a neighborhood watch nobody elected that doesn't care what you think about it.</p>
+        <p>Territory is marked by the land itself: homes, back lots, stretches of swamp claimed over generations. Their tunnel systems are utilitarian and practical.</p>
+        <p>Two forms: <strong>humanoid</strong> (baseline, with visible animal traits — ears, tail, occasionally claws) and <strong>full animal form</strong> triggered by will or, inconveniently, the full moon. Lycanthropy can be transmitted through blood-on-blood contact during a full moon. Turning someone without consent is one of the gravest violations in pack culture.</p>
+        <p>The packs of Belle Rivière stay in their lane. They find vampire succession debates baffling and want no part of them.</p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-ghouls">
+      <h3 class="lore-entry-title">Ghouls</h3>
+      <div class="lore-body">
+        <p>Scavengers, survivors, and the supernatural population most likely to look at a centuries-long vampire succession crisis and say <em>"and?"</em></p>
+        <p>No courts, no packs. Networks — underground, informal, considerably better-informed than anyone gives them credit for. They exist adjacent to every power structure without buying into any. This makes them uniquely positioned to see everything.</p>
+        <p>They sustain on the dead, which in Belle Rivière means they are never short of material. They do not typically hunt living prey but have opinions about those who do that they share with nobody.</p>
+        <p>Their closest public-facing institution: <strong>the town library</strong>. The archivist has been there long enough to have records on everyone. She is the town's living insurance policy and knows it.</p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-lake">
+      <h3 class="lore-entry-title">The Lake</h3>
+      <div class="lore-body">
+        <p>There is something in the lake. Everyone in Belle Rivière knows this. Nobody says it out loud.</p>
+        <p>Ancient — older than the courts, older than the packs, older than anyone currently walking around with opinions about things. No jurisdiction applies. No territorial claim reaches it.</p>
+        <p>The rule is simple: <strong>don't go near the water after dark.</strong> Observed by humans and monsters alike. The ghouls, when asked, say nothing and look at you like you asked something very stupid.</p>
+        <p>The lake monster is not a secret in the sense of something hidden. It is a secret in the sense of something everyone knows and nobody acknowledges — like a very large and dangerous thing sitting in the room that the entire town has agreed to pretend is furniture.</p>
+        <p><em>The legends are not exaggerated.</em></p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-cannibals">
+      <h3 class="lore-entry-title">Cannibals</h3>
+      <div class="lore-body">
+        <p>Cannibalism in Belle Rivière is not common, but it is not rare enough to be dismissed as rumor. It exists beneath the town like rot under the floorboards: hidden, old, ugly, and difficult to fully remove.</p>
+        <p>Cannibals are <strong>human</strong>. This is what makes them uniquely unsettling to the supernatural population. Vampires drink blood because they are vampires. Ghouls feed on the dead because they are ghouls. Werewolves have instincts tied to the moon. Cannibals do not have a species excuse. They are simply people who crossed a line and learned to live there.</p>
+        <p>Some were born into it through family. Some found it through desperation, obsession, madness, or proximity to Belle Rivière's strangeness. Some insist the town itself does things to people if they stay too long.</p>
+        <p>A cannibal who ends up in vampire territory faces one of two outcomes: they become prey, or the vampire they end up with looks at them for a long moment and says <em>"you're like me"</em> in a tone equal parts fascinated and horrified. <strong>The second outcome is increasingly common in Belle Rivière, for reasons the courts have chosen not to examine.</strong></p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-underground">
+      <h3 class="lore-entry-title">The Underground</h3>
+      <div class="lore-body">
+        <p>Belle Rivière's cannibals do not have a formal society. There is no cannibal court, no king, no council, and no public organization. What exists instead is a loose underground made of rumors, old family connections, safe houses, quiet arrangements, coded favors, and people who know people.</p>
+        <p>Some cannibals know each other personally. Some only know names. Some avoid others completely. Some cooperate when it benefits them. Some would betray another cannibal without hesitation if survival required it.</p>
+        <p>The underground is not loyal. It is <strong>practical.</strong> It functions because Belle Rivière is full of hidden appetites and because people with dangerous needs eventually learn where to listen.</p>
+        <p>Nobody is truly in charge. Everyone assumes someone else is.</p>
+        <p>Certain businesses and households have ordinary customers and <strong>special customers.</strong> Ordinary customers arrive in daylight, ask for normal things, and leave believing the world is exactly what it appears to be. Special customers know which doors open after closing, which names to mention, and which phrases should never be said too loudly.</p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-etiquette">
+      <h3 class="lore-entry-title">Codes &amp; Etiquette</h3>
+      <div class="lore-body">
+        <p>The underground survives through discretion. Plain speech is considered reckless. Names are used carefully. Direct questions are avoided unless trust has already been established.</p>
+        <p>Most arrangements are built through coded language, old introductions, favors, timing, and reputation. A person may know where to go without knowing who runs anything. Someone may know a name without ever meeting the person attached to it.</p>
+        <p>Cannibals rarely call themselves cannibals in casual conversation. They talk around the subject. Common phrases that mean nothing to outsiders and too much to the right people:</p>
+        <div class="lore-circles">
+          <div><p class="circle-name">special order / special orders</p></div>
+          <div><p class="circle-name">old appetite / old hunger</p></div>
+          <div><p class="circle-name">family trade</p></div>
+          <div><p class="circle-name">private arrangement</p></div>
+        </div>
+        <p>Familiarity is not safety. A friendly cannibal may still be dangerous. A helpful cannibal may still be hungry. Trust is rare, temporary, and usually transactional.</p>
+        <p>Most Belle Rivière locals do not openly believe in cannibals. They believe in strange disappearances, bad families, old scandals, unsafe roads, and people who should not be trusted after dark. Rumors move through town in half-jokes and warnings. <em>Humans treat these like local superstition. Monsters tend to listen more carefully. Ghouls listen most of all.</em></p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-families">
+      <h3 class="lore-entry-title">Cannibal Families</h3>
+      <div class="lore-body">
+        <p>Some cannibals in Belle Rivière are isolated individuals. Others come from families where the practice has existed quietly for generations.</p>
+        <p>These families rarely describe themselves as cannibal families. They call it <em>inheritance, tradition, obligation, appetite, survival,</em> or simply <em>the way things are.</em> Children raised near it may not understand the full truth at first. They learn through fragments: closed rooms, special customers, warnings about what not to say, and adults who treat the unspeakable like ordinary housework.</p>
+        <p>Family-based cannibalism is especially difficult to expose because it hides behind routine. A respected business. A beloved grandparent. A normal kitchen. A familiar shop. A polite child taught to keep quiet.</p>
+        <p><strong>Belle Rivière protects many horrors by making them look domestic.</strong></p>
+        <p>The Walker butcher shop is the clearest example. Three generations of respected service. Clean counters, handwritten price signs, a young man who smiles like he has never done anything wrong in his life. Families shop there. The horror is how normal it looks. The Walker shop works because nobody wants to suspect the nice young butcher.</p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-economy">
+      <h3 class="lore-entry-title">Economy &amp; Currency</h3>
+      <div class="lore-body">
+        <p><strong>Cash</strong> handles the human-facing side: bribing officials, maintaining estates, paying for the legal infrastructure that keeps supernatural operations invisible. Vampires are particularly fluent in this, having had centuries to accumulate wealth.</p>
+        <p><strong>Favors and information</strong> are the supernatural economy. <em>"I will not mention what I saw in your tunnels if you tell me what the Moonwater Circle wants"</em> is a common shape of transaction. The librarian operates on this system and is owed a considerable amount.</p>
+        <p><strong>Food</strong> — meaning prey — is the darkest layer and the one nobody discusses in polite company. Vampire logistics, cannibal networks, ghoul access, and human crime occasionally intersect in ways nobody wants written down. This is one of several reasons Belle Rivière is more dangerous for humans than the postcard suggests.</p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-eighties">
+      <h3 class="lore-entry-title">The 1980s</h3>
+      <div class="lore-body">
+        <p>Belle Rivière in the 1980s looks like a <strong>Southern Gothic postcard</strong> and sounds like a synth-heavy nightmare. The vampire courts have spent three centuries mastering aristocratic etiquette and are now watching their heirs show up to council meetings dressed like goth rock stars. The cognitive dissonance is ongoing.</p>
+        <p>Spanish moss over wrought iron fences. Plantation manor estates converted into vampire holdings. <strong>Neon signs bleeding light onto humid streets.</strong> Muscle cars parked outside clubs that close when the sun comes up. Candle shops pretending not to sell real spells. Cassette tapes playing in houses older than the country.</p>
+        <p>The vampires have adapted to modernity by wearing it over the top of everything they already were. Lurielle added shoulder pads to silhouettes that wouldn't have looked out of place in 1680. Lior put chains on pants that cost more than most humans' cars. Both wear rings that predate the United States.</p>
+        <p>The witches treat the decade as useful camouflage. The werewolf packs find the whole thing aggressively loud and are coping. The ghouls have no opinion on fashion. <em>The lake does not care what year it is.</em></p>
+      </div>
+    </div>
+
+    <div class="lore-entry" id="lore-twins">
+      <h3 class="lore-entry-title">The Vale Twins</h3>
+      <div class="lore-body">
+        <p>The Vale twins were separated as infants over vampire court politics that had nothing to do with them and everything to do with their bloodline. Their parents were powerful. Their lineage represented a succession claim that both major courts wanted to control.</p>
+        <p>The solution: split the children. One to Velvet's sphere, one to Cypress. Raise each as the heir of a rival faction. The logic was that this prevented either court from monopolizing the bloodline. The practical result was two children who grew up hearing propaganda about each other for a hundred years before they ever met.</p>
+        <p>As children they were inseparable. As teenagers they began to pull apart. As adults they became the most professionally competitive siblings in three centuries of vampire politics. <strong>They have never tried to kill each other. They have absolutely tried to embarrass each other.</strong></p>
+        <p>The courts treat their rivalry as a political asset. The twins treat it as a long-running bit that got out of hand somewhere around 1820 and neither knows how to walk back without losing face.</p>
+        <p><em>They have each, independently and without discussing it, ended up attached to a cannibal. Neither has yet had to explain this to the other. That conversation is coming.</em></p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ SCREEN 5 — AUTHOR'S NOTE ═══ -->
+<div class="screen inner-screen" id="screen-authors">
+  <div class="screen-wrap">
+    <p class="screen-eyebrow">BELLE RIVIÈRE // FROM THE CREATOR</p>
+    <h2 class="screen-title crt-text">Author's Note</h2>
+    <div class="authors-paper">
+      <p class="authors-byline">// A NOTE FROM AELURI</p>
+      <p class="authors-text">[ i'll write something here later — watch this space. ]</p>
+      <p class="authors-sig">— Aeluri &nbsp;·&nbsp; Belle Rivière, Louisiana 1980s</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const screens = ['main','factions','characters','lore','authors'];
+
+function goTo(name) {
+  screens.forEach(s => document.getElementById('screen-' + s).classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const bar = document.getElementById('top-bar');
+  bar.style.display = name === 'main' ? 'none' : 'flex';
+  screens.filter(s => s !== 'main').forEach(s => {
+    const el = document.getElementById('nav-' + s);
+    if (el) el.classList.toggle('active', s === name);
+  });
+  window.scrollTo(0,0);
+}
+
+// Slideshow
+const raceNames = ['WITCH','VAMPIRE','WEREWOLF','GHOUL','LAKE CREATURE','HUMAN'];
+const slides = document.querySelectorAll('.faction-slide');
+const raceLabel = document.getElementById('race-label');
+let current = 0;
+function nextSlide() {
+  slides[current].classList.remove('visible');
+  current = (current + 1) % slides.length;
+  slides[current].classList.add('visible');
+  raceLabel.style.opacity = '0';
+  setTimeout(() => {
+    raceLabel.textContent = raceNames[current];
+    raceLabel.style.opacity = '1';
+  }, 750);
+}
+setInterval(nextSlide, 4200);
+
+// Timecode
+const tc = document.getElementById('timecode');
+let frames = 0;
+setInterval(() => {
+  frames++;
+  const f = frames % 30;
+  const s = Math.floor(frames / 30) % 60;
+  const m = Math.floor(frames / 1800) % 60;
+  const h = Math.floor(frames / 108000);
+  tc.textContent =
+    String(h).padStart(2,'0') + ':' +
+    String(m).padStart(2,'0') + ':' +
+    String(s).padStart(2,'0') + ':' +
+    String(f).padStart(2,'0');
+}, 1000/30);
+
+// Lore tabs
+function showLore(btn, id) {
+  document.querySelectorAll('.lore-entry').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.lore-toc-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('lore-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Random VHS glitch
+function scheduleGlitch() {
+  setTimeout(() => {
+    document.body.style.transform = 'translateX(3px)';
+    setTimeout(() => {
+      document.body.style.transform = 'translateX(-2px)';
+      setTimeout(() => { document.body.style.transform = ''; }, 80);
+    }, 60);
+    scheduleGlitch();
+  }, 12000 + Math.random() * 15000);
+}
+scheduleGlitch();
+
+// ── Mouse parallax sway (main menu only) ──
+const mainScreen   = document.getElementById('screen-main');
+const slideshow    = document.getElementById('slideshow');
+const menuContent  = document.querySelector('.main-menu-content');
+const slideOverlay = document.querySelector('.slide-overlay');
+
+let targetX = 0, targetY = 0;
+let currentX = 0, currentY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  // Only active on main menu
+  if (!mainScreen.classList.contains('active')) return;
+  // Normalise -1 to 1
+  const nx = (e.clientX / window.innerWidth  - 0.5) * 2;
+  const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+  targetX = nx;
+  targetY = ny;
+});
+
+// Reset smoothly when mouse leaves the window
+document.addEventListener('mouseleave', () => {
+  targetX = 0;
+  targetY = 0;
+});
+
+(function animateSway() {
+  requestAnimationFrame(animateSway);
+  if (!mainScreen.classList.contains('active')) return;
+
+  // Ease toward target
+  currentX += (targetX - currentX) * 0.055;
+  currentY += (targetY - currentY) * 0.055;
+
+  // Slideshow images move more (deeper layer)
+  slideshow.style.transform =
+    `translate(${currentX * 18}px, ${currentY * 10}px) scale(1.04)`;
+
+  // Content moves subtly in the opposite direction (parallax pop)
+  menuContent.style.transform =
+    `translate(${currentX * -6}px, ${currentY * -4}px)`;
+
+  // Overlay tilts very slightly
+  slideOverlay.style.transform =
+    `translate(${currentX * 4}px, ${currentY * 3}px)`;
+})();
+</script>
+</body>
+</html>
