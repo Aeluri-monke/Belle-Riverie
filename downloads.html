@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BELLE RIVIÈRE — DOWNLOADS</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Cinzel:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black:   #050405;
+  --deepred: #110202;
+  --red:     #8b0000;
+  --bloodred:#c0392b;
+  --neonred: #ff2222;
+  --cream:   #e8d9b8;
+  --bone:    #b8a882;
+  --scanline: rgba(0,0,0,0.18);
+  --title:  'Cinzel', serif;
+  --body:   'EB Garamond', Georgia, serif;
+  --mono:   'VT323', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 9998; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, var(--scanline) 2px, var(--scanline) 4px);
+  animation: scanroll 10s linear infinite;
+}
+@keyframes scanroll { from { background-position: 0 0; } to { background-position: 0 400px; } }
+.vignette {
+  position: fixed; inset: 0; z-index: 9996; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+}
+@media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
+.crt-text { text-shadow: -1px 0 1px rgba(255,0,50,0.3), 1px 0 1px rgba(0,200,255,0.3); }
+
+.top-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  background: rgba(5,4,5,0.95);
+  border-bottom: 1px solid rgba(139,0,0,0.7);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 24px;
+  font-family: var(--mono); font-size: 1.05rem; color: var(--bone);
+  letter-spacing: 0.08em;
+}
+.top-bar .tb-brand { color: var(--neonred); letter-spacing: 0.15em; }
+.top-bar a { color: var(--bone); text-decoration: none; letter-spacing: 0.1em; font-size: 0.95rem; transition: color 0.15s; }
+.top-bar a:hover { color: var(--neonred); }
+
+.wrap { max-width: 920px; margin: 0 auto; padding: 84px 20px 80px; position: relative; z-index: 1; }
+.eyebrow { font-family: var(--mono); font-size: 1.1rem; letter-spacing: 0.2em; color: var(--bloodred); margin-bottom: 6px; }
+h1 { font-family: var(--title); font-weight: 700; font-size: clamp(2rem, 6vw, 3.2rem); letter-spacing: 0.08em; color: var(--cream); margin-bottom: 10px; }
+.lede { color: var(--bone); font-size: 1.15rem; line-height: 1.6; max-width: 640px; margin-bottom: 38px; }
+h2 {
+  font-family: var(--title); font-weight: 400; font-size: 1.15rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--bloodred); margin: 44px 0 16px; padding-bottom: 8px; border-bottom: 1px solid rgba(139,0,0,0.5);
+}
+h2 span { font-family: var(--mono); color: var(--bone); letter-spacing: 0.1em; font-size: 1rem; margin-left: 8px; text-transform: none; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.tape {
+  background: linear-gradient(180deg, rgba(17,2,2,0.9), rgba(5,4,5,0.95));
+  border: 1px solid rgba(139,0,0,0.55);
+  padding: 16px; display: flex; flex-direction: column; gap: 10px;
+}
+.tape .label { font-family: var(--mono); font-size: 1rem; letter-spacing: 0.15em; color: var(--bloodred); }
+.tape h3 { font-family: var(--title); font-size: 1.15rem; letter-spacing: 0.06em; color: var(--cream); font-weight: 700; }
+.tape p { color: var(--bone); font-size: 1.02rem; line-height: 1.5; flex: 1; }
+.tape img { width: 100%; max-height: 360px; object-fit: cover; object-position: top; border: 1px solid rgba(139,0,0,0.4); background: #000; }
+.btn {
+  display: inline-block; text-align: center; text-decoration: none;
+  font-family: var(--mono); font-size: 1.15rem; letter-spacing: 0.14em;
+  color: var(--cream); background: rgba(139,0,0,0.35); border: 1px solid var(--red);
+  padding: 8px 14px; transition: background 0.15s, color 0.15s;
+}
+.btn:hover { background: var(--red); color: #fff; }
+.btn.off { pointer-events: none; opacity: 0.45; border-style: dashed; background: transparent; }
+
+.howto { background: rgba(17,2,2,0.7); border-left: 3px solid var(--red); padding: 16px 20px; margin-bottom: 14px; }
+.howto h3 { font-family: var(--mono); font-weight: 400; font-size: 1.2rem; letter-spacing: 0.15em; color: var(--neonred); margin-bottom: 8px; }
+.howto ol, .howto ul { padding-left: 22px; color: var(--bone); line-height: 1.65; font-size: 1.05rem; }
+.howto b { color: var(--cream); font-weight: 500; }
+code { font-family: var(--mono); font-size: 1.05em; color: var(--cream); background: rgba(139,0,0,0.25); padding: 0 5px; }
+.note { font-style: italic; color: var(--bone); font-size: 1rem; margin-top: 10px; }
+footer { margin-top: 56px; font-family: var(--mono); color: var(--bone); letter-spacing: 0.12em; text-align: center; font-size: 1rem; }
+
+@media (max-width: 600px) {
+  .top-bar { padding: 6px 14px; }
+  .top-bar a { font-size: 0.8rem; }
+  .wrap { padding-top: 76px; }
+}
+</style>
+</head>
+<body>
+<div class="vignette"></div>
+
+<div class="top-bar">
+  <span class="tb-brand">BELLE RIVIÈRE // DOWNLOADS</span>
+  <a href="index.html">◀ BACK TO THE ARCHIVE</a>
+</div>
+
+<div class="wrap">
+  <p class="eyebrow">BELLE RIVIÈRE // TAKE-HOME FILES</p>
+  <h1 class="crt-text">Downloads</h1>
+  <p class="lede">Character cards and lorebooks for SillyTavern and Janitor AI. Tapes are kept below. Please rewind before returning them.</p>
+
+  <h2>Character cards <span>[ SILLYTAVERN PNG ]</span></h2>
+  <div class="grid">
+    <div class="tape" data-file="lior-astalenet.png">
+      <div class="label">TAPE 01</div>
+      <img src="lior-astalenet.png" alt="Lior Astalenet card" loading="lazy" onerror="this.style.display='none'"/>
+      <h3>Lior Astalenet</h3>
+      <p>Charming vampire heir × {{user}}. Sold to him as a meal, marked a cannibal on the paperwork. Dark romance, slow burn, 1980s Louisiana.</p>
+      <a class="btn" href="lior-astalenet.png" download>▶ DOWNLOAD CARD</a>
+    </div>
+    <div class="tape" data-file="benny-walker.png">
+      <div class="label">TAPE 02</div>
+      <img src="benny-walker.png" alt="Benny Walker card" loading="lazy" onerror="this.style.display='none'"/>
+      <h3>Benny Walker</h3>
+      <p>A handsome, polite, sweet-faced young butcher. Families shop there. He looks like the safest man in town.</p>
+      <a class="btn" href="benny-walker.png" download>▶ DOWNLOAD CARD</a>
+    </div>
+  </div>
+
+  <h2>Lorebooks <span>[ WORLD INFO ]</span></h2>
+  <div class="grid">
+    <div class="tape" data-file="belle_riviere_lorebook_v2_ST.json">
+      <div class="label">TAPE 03 // SILLYTAVERN</div>
+      <h3>Belle Rivière v2</h3>
+      <p>The full world: 38 entries, with hard knowledge locks and the vampire and cannibal lore gated by character tag.</p>
+      <a class="btn" href="belle_riviere_lorebook_v2_ST.json" download>▶ DOWNLOAD (ST)</a>
+    </div>
+    <div class="tape" data-file="belle_riviere_lorebook_v2_JAI.json">
+      <div class="label">TAPE 04 // JANITOR AI</div>
+      <h3>Belle Rivière v2</h3>
+      <p>The stripped-down Janitor AI version: 27 entries, with the gated vampire and cannibal lore left out.</p>
+      <a class="btn" href="belle_riviere_lorebook_v2_JAI.json" download>▶ DOWNLOAD (JAI)</a>
+    </div>
+  </div>
+
+  <h2>How to import <span>[ SILLYTAVERN ]</span></h2>
+  <div class="howto">
+    <h3>THE CARD</h3>
+    <ol>
+      <li>Download the PNG. <b>Do not edit, resize or re-save it</b>, because the card data lives inside the image.</li>
+      <li>In SillyTavern, open the character panel and use the <b>import</b> button, then pick the PNG. Dragging the PNG into the window also works.</li>
+    </ol>
+  </div>
+  <div class="howto">
+    <h3>THE LOREBOOK</h3>
+    <ol>
+      <li>Open <b>World Info</b> and use <b>Import World Info</b> with the <code>_ST.json</code> file.</li>
+      <li>Attach it to the card (character lorebook) or enable it globally.</li>
+      <li>Tag Lior <code>vampire</code> and Benny <code>cannibal</code>. Those tags are what open the vampire-only and cannibal-only entries for them.</li>
+    </ol>
+    <p class="note">Entries are keyword-triggered. If nothing fires, check that your global World Info scan depth is not set to 0.</p>
+  </div>
+  <div class="howto">
+    <h3>JANITOR AI</h3>
+    <ul>
+      <li>Use the <code>_JAI.json</code> file. It only keeps the fields Janitor AI reads.</li>
+      <li>Please be nice to the models. They are doing their best.</li>
+    </ul>
+  </div>
+
+  <footer>— END OF TAPE —</footer>
+</div>
+
+<script>
+// Mark any file that has not been uploaded yet (a real 404 only, so local previews still work).
+document.querySelectorAll('.tape[data-file]').forEach(function (tape) {
+  fetch(tape.dataset.file, { method: 'HEAD' }).then(function (res) {
+    if (res.status === 404) {
+      var btn = tape.querySelector('.btn');
+      btn.classList.add('off');
+      btn.removeAttribute('download');
+      btn.removeAttribute('href');
+      btn.textContent = '■ TAPE NOT FOUND (YET)';
+    }
+  }).catch(function () {});
+});
+</script>
+</body>
+</html>
