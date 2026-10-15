@@ -83,6 +83,9 @@ h2 span { font-family: var(--mono); color: var(--bone); letter-spacing: 0.1em; f
 }
 .btn:hover { background: var(--red); color: #fff; }
 .btn.off { pointer-events: none; opacity: 0.45; border-style: dashed; background: transparent; }
+.alt { font-family: var(--mono); font-size: 1rem; letter-spacing: 0.08em; color: var(--bone); text-decoration: underline; text-decoration-color: rgba(139,0,0,0.6); text-underline-offset: 3px; text-align: center; }
+.alt:hover { color: var(--neonred); }
+.alt.off { pointer-events: none; opacity: 0.45; text-decoration: none; }
 
 .howto { background: rgba(17,2,2,0.7); border-left: 3px solid var(--red); padding: 16px 20px; margin-bottom: 14px; }
 .howto h3 { font-family: var(--mono); font-weight: 400; font-size: 1.2rem; letter-spacing: 0.15em; color: var(--neonred); margin-bottom: 8px; }
@@ -110,7 +113,7 @@ footer { margin-top: 56px; font-family: var(--mono); color: var(--bone); letter-
 <div class="wrap">
   <p class="eyebrow">BELLE RIVIÈRE // TAKE-HOME FILES</p>
   <h1 class="crt-text">Downloads</h1>
-  <p class="lede">Character cards and lorebooks for SillyTavern and Janitor AI. Tapes are kept below. Please rewind before returning them.</p>
+  <p class="lede">Character cards and lorebooks, mainly for SillyTavern. Janitor AI users can copy lorebooks straight from the bot page. Tapes are kept below. Please rewind before returning them.</p>
 
   <h2>Character cards <span>[ SILLYTAVERN PNG ]</span></h2>
   <div class="grid">
@@ -125,7 +128,7 @@ footer { margin-top: 56px; font-family: var(--mono); color: var(--bone); letter-
       <div class="label">TAPE 02</div>
       <img src="benny-walker.png" alt="Benny Walker card" loading="lazy" onerror="this.style.display='none'"/>
       <h3>Benny Walker</h3>
-      <p>A handsome, polite, sweet-faced young butcher. Families shop there. He looks like the safest man in town.</p>
+      <p>A handsome, polite, sweet-faced young butcher. Families shop there. He looks like the safest man in town. The original Belle Rivière lorebook is built into the card. Import The Old Hunger (below) separately.</p>
       <a class="btn" href="benny-walker.png" download>▶ DOWNLOAD CARD</a>
     </div>
   </div>
@@ -135,14 +138,32 @@ footer { margin-top: 56px; font-family: var(--mono); color: var(--bone); letter-
     <div class="tape" data-file="belle_riviere_lorebook_v2_ST.json">
       <div class="label">TAPE 03 // SILLYTAVERN</div>
       <h3>Belle Rivière v2</h3>
-      <p>The full world: 38 entries, with hard knowledge locks and the vampire and cannibal lore gated by character tag.</p>
+      <p>The full world: 38 entries, with hard knowledge locks and the vampire and cannibal lore gated by character tag. Use this one for Lior and anything new.</p>
       <a class="btn" href="belle_riviere_lorebook_v2_ST.json" download>▶ DOWNLOAD (ST)</a>
+      <a class="alt" href="belle_riviere_lorebook_v2_JAI.json" download>also on Janitor AI? backup file (JAI, 27 entries)</a>
     </div>
-    <div class="tape" data-file="belle_riviere_lorebook_v2_JAI.json">
-      <div class="label">TAPE 04 // JANITOR AI</div>
-      <h3>Belle Rivière v2</h3>
-      <p>The stripped-down Janitor AI version: 27 entries, with the gated vampire and cannibal lore left out.</p>
-      <a class="btn" href="belle_riviere_lorebook_v2_JAI.json" download>▶ DOWNLOAD (JAI)</a>
+  </div>
+
+  <h2>Original lorebooks <span>[ BENNY ONLY ]</span></h2>
+  <div class="howto">
+    <h3>READ THIS FIRST</h3>
+    <p style="color:var(--bone);line-height:1.65;font-size:1.05rem;">These are the original lorebooks Benny Walker's bot was built on. They are kept here <b style="color:var(--cream);font-weight:500;">exactly as they were</b> so his live bot does not break, which means they are meant to be used <b style="color:var(--cream);font-weight:500;">with Benny only</b>. They are older and looser than v2, and they do not have the knowledge locks. For Lior and everything new, use v2 above.</p>
+    <p class="note">The ST files are straight conversions of the same entries and keys. The JAI files are the originals Benny's bot runs on.</p>
+  </div>
+  <div class="grid">
+    <div class="tape">
+      <div class="label">TAPE 05 // THE ORIGINAL</div>
+      <h3>Belle Rivière (original)</h3>
+      <p>The first full world lorebook: 26 entries covering the town, the factions and the first cast.</p>
+      <a class="btn" href="belle_riviere_lorebook_original_ST.json" download>▶ DOWNLOAD (ST)</a>
+      <a class="alt" href="belle_riviere_lorebook_original_JAI.json" download>Janitor AI backup file (JAI)</a>
+    </div>
+    <div class="tape">
+      <div class="label">TAPE 06 // THE ORIGINAL</div>
+      <h3>The Old Hunger (original)</h3>
+      <p>Benny's own lorebook, the original cannibal book: 14 entries on cannibals, the underground, the Walker shop and the family. Goes with Benny so his bot works in ST. It is not built into his card, so import it separately.</p>
+      <a class="btn" href="the_old_hunger_lorebook_original_ST.json" download>▶ DOWNLOAD (ST)</a>
+      <a class="alt" href="the_old_hunger_lorebook_original_JAI.json" download>Janitor AI backup file (JAI)</a>
     </div>
   </div>
 
@@ -159,14 +180,15 @@ footer { margin-top: 56px; font-family: var(--mono); color: var(--bone); letter-
     <ol>
       <li>Open <b>World Info</b> and use <b>Import World Info</b> with the <code>_ST.json</code> file.</li>
       <li>Attach it to the card (character lorebook) or enable it globally.</li>
-      <li>Tag Lior <code>vampire</code> and Benny <code>cannibal</code>. Those tags are what open the vampire-only and cannibal-only entries for them.</li>
+      <li>Tag the character <code>vampire</code> or <code>cannibal</code> to open that group's gated entries. Lior is tagged <code>vampire</code>.</li>
     </ol>
     <p class="note">Entries are keyword-triggered. If nothing fires, check that your global World Info scan depth is not set to 0.</p>
   </div>
   <div class="howto">
     <h3>JANITOR AI</h3>
     <ul>
-      <li>Use the <code>_JAI.json</code> file. It only keeps the fields Janitor AI reads.</li>
+      <li>Janitor AI lets you copy a lorebook straight from the bot page, so you can skip these downloads.</li>
+      <li>The <code>_JAI.json</code> files are backups. They only keep the fields Janitor AI reads.</li>
       <li>Please be nice to the models. They are doing their best.</li>
     </ul>
   </div>
@@ -176,10 +198,9 @@ footer { margin-top: 56px; font-family: var(--mono); color: var(--bone); letter-
 
 <script>
 // Mark any file that has not been uploaded yet (a real 404 only, so local previews still work).
-document.querySelectorAll('.tape[data-file]').forEach(function (tape) {
-  fetch(tape.dataset.file, { method: 'HEAD' }).then(function (res) {
+document.querySelectorAll('a.btn[download], a.alt[download]').forEach(function (btn) {
+  fetch(btn.getAttribute('href'), { method: 'HEAD' }).then(function (res) {
     if (res.status === 404) {
-      var btn = tape.querySelector('.btn');
       btn.classList.add('off');
       btn.removeAttribute('download');
       btn.removeAttribute('href');
