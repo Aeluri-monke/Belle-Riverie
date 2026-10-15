@@ -1325,9 +1325,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "vampire"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -1397,9 +1395,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "vampire"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -1467,9 +1463,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "vampire"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -1538,9 +1532,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "vampire"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -1823,9 +1815,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "cannibal"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -1895,9 +1885,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "vampire"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -2032,9 +2020,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "cannibal"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -2165,9 +2151,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "vampire"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -2298,9 +2282,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "vampire"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -2509,9 +2491,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "cannibal"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
@@ -2652,9 +2632,7 @@
       "characterFilter": {
         "isExclude": false,
         "names": [],
-        "tags": [
-          "cannibal"
-        ]
+        "tags": []
       },
       "matchPersonaDescription": false,
       "matchCharacterDescription": false,
